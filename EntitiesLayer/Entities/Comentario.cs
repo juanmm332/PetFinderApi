@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+#nullable enable
+
 namespace EntitiesLayer
 {
     public class Comentario
@@ -18,9 +20,14 @@ namespace EntitiesLayer
 
         public int IdAviso { get; set; }
 
-        public string Texto { get; set; }
+        [Required]
+        public required string Texto { get; set; }
 
         public DateTime Fecha { get; set; }
+
+        public Usuario? Usuario { get; set; }
+
+        public Aviso? Aviso { get; set; }
 
     }
 }

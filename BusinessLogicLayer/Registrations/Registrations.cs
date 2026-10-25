@@ -9,6 +9,9 @@ namespace BusinessLogicLayer
             //Inyeccion de dependencia de los servicios
 
             services.AddScoped<IUsuarioManager, UsuarioManager>();
+            services.AddScoped<IAnimalManager, AnimalManager>();
+            services.AddScoped<IAvisoManager, AvisoManager>();
+            services.AddScoped<IComentarioManager, ComentarioManager>();
 
             return services;
         }

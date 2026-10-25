@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace PresentationLayer.Models
 {
-    /// <summary>Datos necesarios para crear un usuario, sin incluir su identificador.</summary>
     [JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]
     public sealed record CreateUsuarioRequest
     {
