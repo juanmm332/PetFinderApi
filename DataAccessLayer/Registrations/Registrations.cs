@@ -1,22 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DataAccessLayer
 {
     public static class Registrations
     {
-        public static IServiceCollection AddDataAccessLayerServices(this IServiceCollection services)
+        public static IServiceCollection AddDataAccessLayerServices(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrWhiteSpace(connectionString))
             {
-                options.UseSqlServer("AQUI_LA_CADENA_DE_CONEXION");
-            }, ServiceLifetime.Scoped);
+                throw new InvalidOperationException(
+                    "La cadena de conexión 'DefaultConnection' no está configurada.");
+            }
 
-            var context = services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>();
-            //context.Database.EnsureCreated();
-
-            //Inyeccion de dependencia de los servicios
-            services.AddSingleton<ITossedCoinStore, TossedCoinStore>();
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+            services.AddScoped<IUsuarioStore, UsuarioStore>();
 
             return services;
         }

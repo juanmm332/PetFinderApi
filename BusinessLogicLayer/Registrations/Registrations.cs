@@ -7,8 +7,8 @@ namespace BusinessLogicLayer
         public static IServiceCollection AddBusinessLogicLayerServices(this IServiceCollection services)
         {
             //Inyeccion de dependencia de los servicios
-            services.AddScoped<ITossedCoinManager, TossedCoinManager>();
 
+            services.AddScoped<IUsuarioManager, UsuarioManager>();
 
             return services;
         }

@@ -1,18 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using EntitiesLayer;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer
 {
-    //internal class ApplicationDbContext
-    //{
-    //    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    //    {
-    //    }
-
-    //    protected ApplicationDbContext()
-    //    {
-    //    }
-    //}
-
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -20,8 +10,6 @@ namespace DataAccessLayer
         {
         }
 
-        protected ApplicationDbContext()
-        {
-        }
+        public DbSet<Usuario> Usuarios => Set<Usuario>();
     }
 }
