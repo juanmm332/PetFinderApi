@@ -10,7 +10,7 @@ namespace PresentationLayer.Models
         [Required]
         public required string Nombre { get; init; }
 
-        [Required]
+        [Required, MinLength(5)]
         public required string Contraseña { get; init; }
 
         [Required]

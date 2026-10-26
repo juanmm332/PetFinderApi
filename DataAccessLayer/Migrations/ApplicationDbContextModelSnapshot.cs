@@ -49,7 +49,8 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Correo")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(254)
+                        .HasColumnType("varchar(254)");
 
                     b.Property<string>("Nombre")
                         .HasColumnType("longtext");
@@ -58,6 +59,9 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Correo")
+                        .IsUnique();
 
                     b.ToTable("Usuarios");
                 });
