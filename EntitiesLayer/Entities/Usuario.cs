@@ -22,5 +22,13 @@ namespace EntitiesLayer
 
         public string Telefono { get; set; }
 
+        public bool EsAdministrador { get; set; }
+
+        public bool Eliminado { get; set; }
+
+        public ICollection<Animal> Animales { get; set; } = new List<Animal>();
+
+        public ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
+
     }
 }

@@ -20,6 +20,9 @@ namespace DataAccessLayer
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
             services.AddScoped<IUsuarioStore, UsuarioStore>();
+            services.AddScoped<IAnimalStore, AnimalStore>();
+            services.AddScoped<IAvisoStore, AvisoStore>();
+            services.AddScoped<IComentarioStore, ComentarioStore>();
 
             return services;
         }
