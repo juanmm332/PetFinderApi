@@ -20,6 +20,14 @@ namespace DataAccessLayer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Usuario>()
+                .Property(usuario => usuario.Correo)
+                .HasMaxLength(254);
+
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(usuario => usuario.Correo)
+                .IsUnique();
+
             modelBuilder.Entity<Animal>()
                 .HasOne(animal => animal.Usuario)
                 .WithMany(usuario => usuario.Animales)

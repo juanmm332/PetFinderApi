@@ -1,21 +1,9 @@
-@PresentationLayer_HostAddress = http://localhost:5183
-@idUsuario = 1
-@idAnimal = 1
-@idAviso = 1
+@PresentationLayer_HostAddress = https://localhost:7197
+@token = {{login.response.body.accessToken}}
+@adminToken = paste-admin-token-here
 
-### Obtener usuarios
-GET {{PresentationLayer_HostAddress}}/api/Usuario
-Accept: application/json
-
-###
-
-### Obtener usuario por ID
-GET {{PresentationLayer_HostAddress}}/api/Usuario/{{idUsuario}}
-Accept: application/json
-
-###
-
-### Crear usuario
+### Registrar usuario (público)
+# @name register
 POST {{PresentationLayer_HostAddress}}/api/Usuario
 Content-Type: application/json
 
@@ -28,8 +16,32 @@ Content-Type: application/json
 
 ###
 
-### Actualizar usuario
-PUT {{PresentationLayer_HostAddress}}/api/Usuario/{{idUsuario}}
+### Iniciar sesión y guardar el token JWT
+# @name login
+POST {{PresentationLayer_HostAddress}}/api/Auth/login
+Content-Type: application/json
+
+{
+  "correo": "ana@example.com",
+  "contraseña": "CambiarEstaClave123!"
+}
+
+### Usuarios
+
+GET {{PresentationLayer_HostAddress}}/api/Usuario
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{PresentationLayer_HostAddress}}/api/Usuario/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+PUT {{PresentationLayer_HostAddress}}/api/Usuario/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -41,38 +53,42 @@ Content-Type: application/json
 
 ###
 
-### Eliminar usuario (borrado lógico)
-DELETE {{PresentationLayer_HostAddress}}/api/Usuario/{{idUsuario}}
+DELETE {{PresentationLayer_HostAddress}}/api/Usuario/1
+Authorization: Bearer {{token}}
 
 ###
 
-### Obtener animales
+PATCH {{PresentationLayer_HostAddress}}/api/Usuario/1/restore
+Authorization: Bearer {{adminToken}}
+
+### Animales
+
 GET {{PresentationLayer_HostAddress}}/api/Animal
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
 
-### Obtener animal por ID
-GET {{PresentationLayer_HostAddress}}/api/Animal/{{idAnimal}}
+GET {{PresentationLayer_HostAddress}}/api/Animal/1
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
 
-### Crear animal
 POST {{PresentationLayer_HostAddress}}/api/Animal
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "nombre": "Luna",
   "foto": "https://example.com/luna.jpg",
-  "comentario": "Perra amigable",
-  "idUsuario": {{idUsuario}}
+  "comentario": "Perra amigable"
 }
 
 ###
 
-### Actualizar animal
-PUT {{PresentationLayer_HostAddress}}/api/Animal/{{idAnimal}}
+PUT {{PresentationLayer_HostAddress}}/api/Animal/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -83,29 +99,34 @@ Content-Type: application/json
 
 ###
 
-### Eliminar animal (borrado lógico)
-DELETE {{PresentationLayer_HostAddress}}/api/Animal/{{idAnimal}}
+DELETE {{PresentationLayer_HostAddress}}/api/Animal/1
+Authorization: Bearer {{token}}
 
 ###
 
-### Obtener avisos
+PATCH {{PresentationLayer_HostAddress}}/api/Animal/1/restore
+Authorization: Bearer {{adminToken}}
+
+### Avisos
+
 GET {{PresentationLayer_HostAddress}}/api/Aviso
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
 
-### Obtener aviso por ID
-GET {{PresentationLayer_HostAddress}}/api/Aviso/{{idAviso}}
+GET {{PresentationLayer_HostAddress}}/api/Aviso/1
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
 
-### Crear aviso
 POST {{PresentationLayer_HostAddress}}/api/Aviso
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "idAnimal": {{idAnimal}},
+  "idAnimal": 1,
   "estado": "Activo",
   "ultimaUbicacionVista": "Parque central",
   "comentario": "Visto esta manana"
@@ -113,49 +134,53 @@ Content-Type: application/json
 
 ###
 
-### Actualizar aviso
-PUT {{PresentationLayer_HostAddress}}/api/Aviso/{{idAviso}}
+PUT {{PresentationLayer_HostAddress}}/api/Aviso/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "estado": "Encontrado",
   "ultimaUbicacionVista": "Clinica veterinaria",
-  "comentario": "Actualizacion del aviso"
+  "comentario": "Aviso actualizado"
 }
 
 ###
 
-### Eliminar aviso (borrado lógico)
-DELETE {{PresentationLayer_HostAddress}}/api/Aviso/{{idAviso}}
+DELETE {{PresentationLayer_HostAddress}}/api/Aviso/1
+Authorization: Bearer {{token}}
 
 ###
 
-### Obtener comentarios
+PATCH {{PresentationLayer_HostAddress}}/api/Aviso/1/restore
+Authorization: Bearer {{adminToken}}
+
+### Comentarios
+
 GET {{PresentationLayer_HostAddress}}/api/Comentario
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
 
-### Obtener comentario por ID
 GET {{PresentationLayer_HostAddress}}/api/Comentario/1
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
 
-### Crear comentario
 POST {{PresentationLayer_HostAddress}}/api/Comentario
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "texto": "Espero que encuentren a Luna pronto.",
-  "idAviso": {{idAviso}},
-  "idUsuario": {{idUsuario}}
+  "idAviso": 1
 }
 
 ###
 
-### Actualizar comentario
 PUT {{PresentationLayer_HostAddress}}/api/Comentario/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -164,5 +189,10 @@ Content-Type: application/json
 
 ###
 
-### Eliminar comentario (borrado lógico)
 DELETE {{PresentationLayer_HostAddress}}/api/Comentario/1
+Authorization: Bearer {{token}}
+
+###
+
+PATCH {{PresentationLayer_HostAddress}}/api/Comentario/1/restore
+Authorization: Bearer {{adminToken}}

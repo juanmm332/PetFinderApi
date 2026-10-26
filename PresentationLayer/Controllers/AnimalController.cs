@@ -2,12 +2,15 @@
 using EntitiesLayer;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
+using PresentationLayer.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PresentationLayer
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AnimalController : ControllerBase
+    [Authorize]
+    public class AnimalController : AuthorizedApiController
     {
         private readonly IAnimalManager _manager;
         
@@ -19,25 +22,7 @@ namespace PresentationLayer
         [HttpGet]
         public IActionResult GetAll()
         {
-            var animalList = _manager.GetAllAnimals()
-                .Select(animal => new
-                {
-                    animal.Id,
-                    animal.Nombre,
-                    animal.Foto,
-                    animal.Comentario,
-                    animal.IdUsuario,
-                    Usuario = animal.Usuario is null
-                        ? null
-                        : new
-                        {
-                            animal.Usuario.Id,
-                            animal.Usuario.Nombre,
-                            animal.Usuario.Correo,
-                            animal.Usuario.Telefono
-                        }
-                });
-
+            var animalList = _manager.GetAllAnimals().Select(ToResponse);
             return Ok(new { animalList });
         }
 
@@ -45,57 +30,86 @@ namespace PresentationLayer
         public IActionResult GetById(int id)
         {
             var animal = _manager.GetAnimalById(id);
-            if (animal is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(new
-            {
-                animal.Id,
-                animal.Nombre,
-                animal.Foto,
-                animal.Comentario,
-                animal.IdUsuario
-            });
+            return animal is null ? NotFound() : Ok(ToResponse(animal));
         }
 
         [HttpPost]
         public IActionResult Post([FromBody] CreateAnimalRequest request)
         {
+            var userId = CurrentUserId;
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
+
             var animal = new Animal
             {
                 Nombre = request.Nombre,
                 Foto = request.Foto,
                 Comentario = request.Comentario,
-                IdUsuario = request.IdUsuario
+                IdUsuario = userId.Value
             };
-            string result = _manager.CreateAnimal(animal);
-
-            return Ok(new { Message = result });
+            _manager.CreateAnimal(animal);
+            return CreatedAtAction(nameof(GetById), new { id = animal.Id }, ToResponse(animal));
         }
 
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, [FromBody] UpdateAnimalRequest request)
         {
+            var userId = CurrentUserId;
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
+
             var animal = new Animal
             {
                 Nombre = request.Nombre,
                 Foto = request.Foto,
                 Comentario = request.Comentario
             };
-
-            return _manager.UpdateAnimal(id, 0, true, animal)
-                ? NoContent()
-                : NotFound();
+            return _manager.UpdateAnimal(id, userId.Value, IsAdministrator, animal) ? NoContent() : NotFound();
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            return _manager.DeleteAnimal(id, 0, true)
-                ? NoContent()
-                : NotFound();
+            var userId = CurrentUserId;
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
+
+            return _manager.DeleteAnimal(id, userId.Value, IsAdministrator) ? NoContent() : NotFound();
         }
+
+        [HttpPatch("{id:int}/restore")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Restore(int id)
+        {
+            return _manager.RestoreAnimal(id) ? NoContent() : NotFound();
+        }
+
+        private static object ToResponse(Animal animal)
+        {
+            return new
+            {
+                animal.Id,
+                animal.Nombre,
+                animal.Foto,
+                animal.Comentario,
+                animal.IdUsuario,
+                Usuario = animal.Usuario is null || animal.Usuario.Eliminado
+                    ? null
+                    : new
+                    {
+                        animal.Usuario.Id,
+                        animal.Usuario.Nombre,
+                        animal.Usuario.Correo,
+                        animal.Usuario.Telefono
+                    }
+            };
+        }
+
     }
 }
