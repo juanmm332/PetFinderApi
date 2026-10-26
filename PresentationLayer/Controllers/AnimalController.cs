@@ -41,6 +41,25 @@ namespace PresentationLayer
             return Ok(new { animalList });
         }
 
+        [HttpGet("{id:int}")]
+        public IActionResult GetById(int id)
+        {
+            var animal = _manager.GetAnimalById(id);
+            if (animal is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                animal.Id,
+                animal.Nombre,
+                animal.Foto,
+                animal.Comentario,
+                animal.IdUsuario
+            });
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody] CreateAnimalRequest request)
         {
@@ -54,6 +73,29 @@ namespace PresentationLayer
             string result = _manager.CreateAnimal(animal);
 
             return Ok(new { Message = result });
+        }
+
+        [HttpPut("{id:int}")]
+        public IActionResult Put(int id, [FromBody] UpdateAnimalRequest request)
+        {
+            var animal = new Animal
+            {
+                Nombre = request.Nombre,
+                Foto = request.Foto,
+                Comentario = request.Comentario
+            };
+
+            return _manager.UpdateAnimal(id, 0, true, animal)
+                ? NoContent()
+                : NotFound();
+        }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id)
+        {
+            return _manager.DeleteAnimal(id, 0, true)
+                ? NoContent()
+                : NotFound();
         }
     }
 }

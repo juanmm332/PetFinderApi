@@ -1,6 +1,168 @@
 @PresentationLayer_HostAddress = http://localhost:5183
+@idUsuario = 1
+@idAnimal = 1
+@idAviso = 1
 
-GET {{PresentationLayer_HostAddress}}/weatherforecast/
+### Obtener usuarios
+GET {{PresentationLayer_HostAddress}}/api/Usuario
 Accept: application/json
 
 ###
+
+### Obtener usuario por ID
+GET {{PresentationLayer_HostAddress}}/api/Usuario/{{idUsuario}}
+Accept: application/json
+
+###
+
+### Crear usuario
+POST {{PresentationLayer_HostAddress}}/api/Usuario
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "contraseña": "CambiarEstaClave123!",
+  "correo": "ana@example.com",
+  "telefono": "555-0100"
+}
+
+###
+
+### Actualizar usuario
+PUT {{PresentationLayer_HostAddress}}/api/Usuario/{{idUsuario}}
+Content-Type: application/json
+
+{
+  "nombre": "Ana Actualizada",
+  "contraseña": "CambiarEstaClave123!",
+  "correo": "ana@example.com",
+  "telefono": "555-0101"
+}
+
+###
+
+### Eliminar usuario (borrado lógico)
+DELETE {{PresentationLayer_HostAddress}}/api/Usuario/{{idUsuario}}
+
+###
+
+### Obtener animales
+GET {{PresentationLayer_HostAddress}}/api/Animal
+Accept: application/json
+
+###
+
+### Obtener animal por ID
+GET {{PresentationLayer_HostAddress}}/api/Animal/{{idAnimal}}
+Accept: application/json
+
+###
+
+### Crear animal
+POST {{PresentationLayer_HostAddress}}/api/Animal
+Content-Type: application/json
+
+{
+  "nombre": "Luna",
+  "foto": "https://example.com/luna.jpg",
+  "comentario": "Perra amigable",
+  "idUsuario": {{idUsuario}}
+}
+
+###
+
+### Actualizar animal
+PUT {{PresentationLayer_HostAddress}}/api/Animal/{{idAnimal}}
+Content-Type: application/json
+
+{
+  "nombre": "Luna Actualizada",
+  "foto": "https://example.com/luna.jpg",
+  "comentario": "Comentario actualizado"
+}
+
+###
+
+### Eliminar animal (borrado lógico)
+DELETE {{PresentationLayer_HostAddress}}/api/Animal/{{idAnimal}}
+
+###
+
+### Obtener avisos
+GET {{PresentationLayer_HostAddress}}/api/Aviso
+Accept: application/json
+
+###
+
+### Obtener aviso por ID
+GET {{PresentationLayer_HostAddress}}/api/Aviso/{{idAviso}}
+Accept: application/json
+
+###
+
+### Crear aviso
+POST {{PresentationLayer_HostAddress}}/api/Aviso
+Content-Type: application/json
+
+{
+  "idAnimal": {{idAnimal}},
+  "estado": "Activo",
+  "ultimaUbicacionVista": "Parque central",
+  "comentario": "Visto esta manana"
+}
+
+###
+
+### Actualizar aviso
+PUT {{PresentationLayer_HostAddress}}/api/Aviso/{{idAviso}}
+Content-Type: application/json
+
+{
+  "estado": "Encontrado",
+  "ultimaUbicacionVista": "Clinica veterinaria",
+  "comentario": "Actualizacion del aviso"
+}
+
+###
+
+### Eliminar aviso (borrado lógico)
+DELETE {{PresentationLayer_HostAddress}}/api/Aviso/{{idAviso}}
+
+###
+
+### Obtener comentarios
+GET {{PresentationLayer_HostAddress}}/api/Comentario
+Accept: application/json
+
+###
+
+### Obtener comentario por ID
+GET {{PresentationLayer_HostAddress}}/api/Comentario/1
+Accept: application/json
+
+###
+
+### Crear comentario
+POST {{PresentationLayer_HostAddress}}/api/Comentario
+Content-Type: application/json
+
+{
+  "texto": "Espero que encuentren a Luna pronto.",
+  "idAviso": {{idAviso}},
+  "idUsuario": {{idUsuario}}
+}
+
+###
+
+### Actualizar comentario
+PUT {{PresentationLayer_HostAddress}}/api/Comentario/1
+Content-Type: application/json
+
+{
+  "texto": "Comentario actualizado."
+}
+
+###
+
+### Eliminar comentario (borrado lógico)
+DELETE {{PresentationLayer_HostAddress}}/api/Comentario/1

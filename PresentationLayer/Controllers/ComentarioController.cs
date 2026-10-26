@@ -48,6 +48,25 @@ namespace PresentationLayer
             return Ok(new { comentarioList });
         }
 
+        [HttpGet("{id:int}")]
+        public IActionResult GetById(int id)
+        {
+            var comentario = _manager.GetComentarioById(id);
+            if (comentario is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                comentario.Id,
+                comentario.Texto,
+                comentario.IdAviso,
+                comentario.IdUsuario,
+                comentario.Fecha
+            });
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody] CreateComentarioRequest request)
         {
@@ -61,6 +80,27 @@ namespace PresentationLayer
             string result = _manager.CreateComentario(comentario);
 
             return Ok(new { Message = result });
+        }
+
+        [HttpPut("{id:int}")]
+        public IActionResult Put(int id, [FromBody] UpdateComentarioRequest request)
+        {
+            var comentario = new Comentario
+            {
+                Texto = request.Texto
+            };
+
+            return _manager.UpdateComentario(id, 0, true, comentario)
+                ? NoContent()
+                : NotFound();
+        }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id)
+        {
+            return _manager.DeleteComentario(id, 0, true)
+                ? NoContent()
+                : NotFound();
         }
     }
 }
