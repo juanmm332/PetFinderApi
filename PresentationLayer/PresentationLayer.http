@@ -1,6 +1,198 @@
-@PresentationLayer_HostAddress = http://localhost:5183
+@PresentationLayer_HostAddress = https://localhost:7197
+@token = {{login.response.body.accessToken}}
+@adminToken = paste-admin-token-here
 
-GET {{PresentationLayer_HostAddress}}/weatherforecast/
+### Registrar usuario (público)
+# @name register
+POST {{PresentationLayer_HostAddress}}/api/Usuario
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "contraseña": "CambiarEstaClave123!",
+  "correo": "ana@example.com",
+  "telefono": "555-0100"
+}
+
+###
+
+### Iniciar sesión y guardar el token JWT
+# @name login
+POST {{PresentationLayer_HostAddress}}/api/Auth/login
+Content-Type: application/json
+
+{
+  "correo": "ana@example.com",
+  "contraseña": "CambiarEstaClave123!"
+}
+
+### Usuarios
+
+GET {{PresentationLayer_HostAddress}}/api/Usuario
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
+
+GET {{PresentationLayer_HostAddress}}/api/Usuario/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+PUT {{PresentationLayer_HostAddress}}/api/Usuario/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Ana Actualizada",
+  "contraseña": "CambiarEstaClave123!",
+  "correo": "ana@example.com",
+  "telefono": "555-0101"
+}
+
+###
+
+DELETE {{PresentationLayer_HostAddress}}/api/Usuario/1
+Authorization: Bearer {{token}}
+
+###
+
+PATCH {{PresentationLayer_HostAddress}}/api/Usuario/1/restore
+Authorization: Bearer {{adminToken}}
+
+### Animales
+
+GET {{PresentationLayer_HostAddress}}/api/Animal
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{PresentationLayer_HostAddress}}/api/Animal/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+POST {{PresentationLayer_HostAddress}}/api/Animal
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Luna",
+  "foto": "https://example.com/luna.jpg",
+  "comentario": "Perra amigable"
+}
+
+###
+
+PUT {{PresentationLayer_HostAddress}}/api/Animal/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Luna Actualizada",
+  "foto": "https://example.com/luna.jpg",
+  "comentario": "Comentario actualizado"
+}
+
+###
+
+DELETE {{PresentationLayer_HostAddress}}/api/Animal/1
+Authorization: Bearer {{token}}
+
+###
+
+PATCH {{PresentationLayer_HostAddress}}/api/Animal/1/restore
+Authorization: Bearer {{adminToken}}
+
+### Avisos
+
+GET {{PresentationLayer_HostAddress}}/api/Aviso
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{PresentationLayer_HostAddress}}/api/Aviso/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+POST {{PresentationLayer_HostAddress}}/api/Aviso
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "idAnimal": 1,
+  "estado": "Activo",
+  "ultimaUbicacionVista": "Parque central",
+  "comentario": "Visto esta manana"
+}
+
+###
+
+PUT {{PresentationLayer_HostAddress}}/api/Aviso/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "estado": "Encontrado",
+  "ultimaUbicacionVista": "Clinica veterinaria",
+  "comentario": "Aviso actualizado"
+}
+
+###
+
+DELETE {{PresentationLayer_HostAddress}}/api/Aviso/1
+Authorization: Bearer {{token}}
+
+###
+
+PATCH {{PresentationLayer_HostAddress}}/api/Aviso/1/restore
+Authorization: Bearer {{adminToken}}
+
+### Comentarios
+
+GET {{PresentationLayer_HostAddress}}/api/Comentario
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+GET {{PresentationLayer_HostAddress}}/api/Comentario/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+POST {{PresentationLayer_HostAddress}}/api/Comentario
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "texto": "Espero que encuentren a Luna pronto.",
+  "idAviso": 1
+}
+
+###
+
+PUT {{PresentationLayer_HostAddress}}/api/Comentario/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "texto": "Comentario actualizado."
+}
+
+###
+
+DELETE {{PresentationLayer_HostAddress}}/api/Comentario/1
+Authorization: Bearer {{token}}
+
+###
+
+PATCH {{PresentationLayer_HostAddress}}/api/Comentario/1/restore
+Authorization: Bearer {{adminToken}}
