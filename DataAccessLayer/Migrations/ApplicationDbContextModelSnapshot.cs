@@ -33,6 +33,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("Comentario")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Foto")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -62,6 +65,9 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("Comentario")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("Estado")
                         .HasColumnType("int");
 
@@ -89,6 +95,9 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime(6)");
@@ -125,6 +134,12 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<string>("Correo")
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("Eliminado")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("EsAdministrador")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Nombre")
                         .HasColumnType("longtext");

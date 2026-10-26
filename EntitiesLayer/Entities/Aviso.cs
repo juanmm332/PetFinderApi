@@ -24,6 +24,8 @@ namespace EntitiesLayer
 
         public DateTime Fecha { get; set; }
 
+        public bool Eliminado { get; set; }
+
         [Required]
         public required string UltimaUbicacionVista { get; set; }
 

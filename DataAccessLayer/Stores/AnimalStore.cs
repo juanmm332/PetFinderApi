@@ -28,6 +28,8 @@ namespace DataAccessLayer
         {
             return _context.Animales
                 .Include(animal => animal.Usuario)
+                .Include(animal => animal.Avisos)
+                .Where(animal => !animal.Eliminado)
                 .AsNoTracking()
                 .ToList();
         }

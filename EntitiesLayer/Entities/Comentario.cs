@@ -20,6 +20,8 @@ namespace EntitiesLayer
 
         public int IdAviso { get; set; }
 
+        public bool Eliminado { get; set; }
+
         [Required]
         public required string Texto { get; set; }
 

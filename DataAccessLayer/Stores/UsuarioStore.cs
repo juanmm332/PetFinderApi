@@ -26,7 +26,10 @@ namespace DataAccessLayer
 
         public List<Usuario> GetAllUsuarios()
         {
-            return _context.Usuarios.AsNoTracking().ToList();
+            return _context.Usuarios
+                .Where(usuario => !usuario.Eliminado)
+                .AsNoTracking()
+                .ToList();
         }
     }
 }

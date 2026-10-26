@@ -30,5 +30,7 @@ namespace EntitiesLayer
 
         public ICollection<Aviso> Avisos { get; set; } = new List<Aviso>();
 
+        public bool Eliminado { get; set; }
+
     }
 }

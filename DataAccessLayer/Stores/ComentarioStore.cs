@@ -26,6 +26,7 @@ namespace DataAccessLayer
         public List<Comentario> GetAllComentarios()
         {
             return _context.Comentarios
+                .Where(comentario => !comentario.Eliminado)
                 .Include(comentario => comentario.Usuario)
                 .Include(comentario => comentario.Aviso)
                 .AsNoTracking()

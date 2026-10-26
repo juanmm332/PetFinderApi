@@ -26,7 +26,10 @@ namespace DataAccessLayer
 
         public List<Aviso> GetAllAvisos()
         {
-            return _context.Avisos.AsNoTracking().ToList();
+            return _context.Avisos.Where(aviso => !aviso.Eliminado)
+            .Include(aviso => aviso.Animal)
+            .Include(aviso => aviso.Comentarios)
+            .AsNoTracking().ToList();
         }
     }
 }
