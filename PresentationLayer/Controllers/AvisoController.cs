@@ -1,4 +1,4 @@
-﻿using BusinessLogicLayer;
+using BusinessLogicLayer;
 using EntitiesLayer;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
@@ -103,12 +103,27 @@ namespace PresentationLayer
         {
             return new
             {
+                IdAviso = aviso.Id,
                 aviso.Id,
                 aviso.IdAnimal,
                 Estado = aviso.Estado.ToString(),
                 aviso.UltimaUbicacionVista,
                 aviso.Comentario,
-                aviso.Fecha
+                aviso.Fecha,
+                FechaCreacion = aviso.Fecha,
+                CreatedAt = aviso.Fecha,
+                IdUsuario = aviso.Animal?.IdUsuario,
+                Animal = aviso.Animal is null || aviso.Animal.Eliminado
+                    ? null
+                    : new
+                    {
+                        IdAnimal = aviso.Animal.Id,
+                        aviso.Animal.Id,
+                        aviso.Animal.Nombre,
+                        aviso.Animal.Foto,
+                        aviso.Animal.Comentario,
+                        aviso.Animal.IdUsuario
+                    }
             };
         }
 

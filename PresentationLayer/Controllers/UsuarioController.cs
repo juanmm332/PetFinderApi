@@ -1,4 +1,4 @@
-﻿using BusinessLogicLayer;
+using BusinessLogicLayer;
 using EntitiesLayer;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
@@ -130,6 +130,7 @@ namespace PresentationLayer
         {
             return new
             {
+                IdUsuario = usuario.Id,
                 usuario.Id,
                 usuario.Nombre,
                 usuario.Correo,

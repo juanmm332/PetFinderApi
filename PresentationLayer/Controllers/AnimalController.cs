@@ -1,4 +1,4 @@
-﻿using BusinessLogicLayer;
+using BusinessLogicLayer;
 using EntitiesLayer;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
@@ -94,6 +94,7 @@ namespace PresentationLayer
         {
             return new
             {
+                IdAnimal = animal.Id,
                 animal.Id,
                 animal.Nombre,
                 animal.Foto,
@@ -103,6 +104,7 @@ namespace PresentationLayer
                     ? null
                     : new
                     {
+                        IdUsuario = animal.Usuario.Id,
                         animal.Usuario.Id,
                         animal.Usuario.Nombre,
                         animal.Usuario.Correo,

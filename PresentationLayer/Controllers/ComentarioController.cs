@@ -1,4 +1,4 @@
-﻿using BusinessLogicLayer;
+using BusinessLogicLayer;
 using EntitiesLayer;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
@@ -94,14 +94,19 @@ namespace PresentationLayer
         {
             return new
             {
+                IdComentario = comentario.Id,
                 comentario.Id,
                 comentario.Texto,
                 comentario.IdAviso,
                 comentario.IdUsuario,
+                comentario.Fecha,
+                FechaCreacion = comentario.Fecha,
+                CreatedAt = comentario.Fecha,
                 Usuario = comentario.Usuario is null || comentario.Usuario.Eliminado
                     ? null
                     : new
                     {
+                        IdUsuario = comentario.Usuario.Id,
                         comentario.Usuario.Id,
                         comentario.Usuario.Nombre,
                         comentario.Usuario.Correo,
@@ -111,7 +116,9 @@ namespace PresentationLayer
                     ? null
                     : new
                     {
+                        IdAviso = comentario.Aviso.Id,
                         comentario.Aviso.Id,
+                        comentario.Aviso.IdAnimal,
                         Estado = comentario.Aviso.Estado.ToString(),
                         comentario.Aviso.UltimaUbicacionVista
                     }
