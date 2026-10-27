@@ -2,12 +2,15 @@
 using EntitiesLayer;
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
+using PresentationLayer.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PresentationLayer
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ComentarioController : ControllerBase
+    [Authorize]
+    public class ComentarioController : AuthorizedApiController
     {
         private readonly IComentarioManager _manager;
         
@@ -19,32 +22,7 @@ namespace PresentationLayer
         [HttpGet]
         public IActionResult GetAll()
         {
-            var comentarioList = _manager.GetAllComentarios()
-                .Select(comentario => new
-                {
-                    comentario.Id,
-                    comentario.Texto,
-                    comentario.IdAviso,
-                    comentario.IdUsuario,
-                    Usuario = comentario.Usuario is null
-                        ? null
-                        : new
-                        {
-                            comentario.Usuario.Id,
-                            comentario.Usuario.Nombre,
-                            comentario.Usuario.Correo,
-                            comentario.Usuario.Telefono
-                        },
-                    Aviso = comentario.Aviso is null
-                        ? null
-                        : new
-                        {
-                            comentario.Aviso.Id,
-                            comentario.Aviso.Estado,
-                            comentario.Aviso.UltimaUbicacionVista
-                        }
-                });
-
+            var comentarioList = _manager.GetAllComentarios().Select(ToResponse);
             return Ok(new { comentarioList });
         }
 
@@ -52,45 +30,43 @@ namespace PresentationLayer
         public IActionResult GetById(int id)
         {
             var comentario = _manager.GetComentarioById(id);
-            if (comentario is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(new
-            {
-                comentario.Id,
-                comentario.Texto,
-                comentario.IdAviso,
-                comentario.IdUsuario,
-                comentario.Fecha
-            });
+            return comentario is null ? NotFound() : Ok(ToResponse(comentario));
         }
 
         [HttpPost]
         public IActionResult Post([FromBody] CreateComentarioRequest request)
         {
+            var userId = CurrentUserId;
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
+
             var comentario = new Comentario
             {
                 Texto = request.Texto,
                 IdAviso = request.IdAviso,
-                IdUsuario = request.IdUsuario,
+                IdUsuario = userId.Value,
                 Fecha = DateTime.UtcNow
             };
-            string result = _manager.CreateComentario(comentario);
-
-            return Ok(new { Message = result });
+            _manager.CreateComentario(comentario);
+            return CreatedAtAction(nameof(GetById), new { id = comentario.Id }, ToResponse(comentario));
         }
 
         [HttpPut("{id:int}")]
         public IActionResult Put(int id, [FromBody] UpdateComentarioRequest request)
         {
+            var userId = CurrentUserId;
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
+
             var comentario = new Comentario
             {
                 Texto = request.Texto
             };
-
-            return _manager.UpdateComentario(id, 0, true, comentario)
+            return _manager.UpdateComentario(id, userId.Value, IsAdministrator, comentario)
                 ? NoContent()
                 : NotFound();
         }
@@ -98,9 +74,49 @@ namespace PresentationLayer
         [HttpDelete("{id:int}")]
         public IActionResult Delete(int id)
         {
-            return _manager.DeleteComentario(id, 0, true)
-                ? NoContent()
-                : NotFound();
+            var userId = CurrentUserId;
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
+
+            return _manager.DeleteComentario(id, userId.Value, IsAdministrator) ? NoContent() : NotFound();
         }
+
+        [HttpPatch("{id:int}/restore")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Restore(int id)
+        {
+            return _manager.RestoreComentario(id) ? NoContent() : NotFound();
+        }
+
+        private static object ToResponse(Comentario comentario)
+        {
+            return new
+            {
+                comentario.Id,
+                comentario.Texto,
+                comentario.IdAviso,
+                comentario.IdUsuario,
+                Usuario = comentario.Usuario is null || comentario.Usuario.Eliminado
+                    ? null
+                    : new
+                    {
+                        comentario.Usuario.Id,
+                        comentario.Usuario.Nombre,
+                        comentario.Usuario.Correo,
+                        comentario.Usuario.Telefono
+                    },
+                Aviso = comentario.Aviso is null || comentario.Aviso.Eliminado
+                    ? null
+                    : new
+                    {
+                        comentario.Aviso.Id,
+                        Estado = comentario.Aviso.Estado.ToString(),
+                        comentario.Aviso.UltimaUbicacionVista
+                    }
+            };
+        }
+
     }
 }

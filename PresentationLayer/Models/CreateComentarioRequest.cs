@@ -12,7 +12,5 @@ namespace PresentationLayer.Models
         [Range(1, int.MaxValue)]
         public required int IdAviso { get; init; }
 
-        [Range(1, int.MaxValue)]
-        public required int IdUsuario { get; init; }
     }
 }

@@ -14,7 +14,5 @@ namespace PresentationLayer.Models
 
         public string? Comentario { get; init; }
 
-        [Range(1, int.MaxValue)]
-        public required int IdUsuario { get; init; }
     }
 }

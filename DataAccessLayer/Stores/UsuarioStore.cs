@@ -8,6 +8,7 @@ namespace DataAccessLayer
         List<Usuario> GetAllUsuarios();
         Usuario? GetUsuarioById(int id);
         Usuario? GetUsuarioByCorreo(string correo);
+        bool IsCorreoInUse(string correo, int? exceptUserId = null);
         void SaveUsuario(Usuario usuario);
         bool UpdateUsuario(int id, int userId, bool isAdmin, Usuario usuario);
         bool DeleteUsuario(int id, int userId, bool isAdmin);
@@ -47,10 +48,20 @@ namespace DataAccessLayer
 
         public Usuario? GetUsuarioByCorreo(string correo)
         {
+            var normalizedCorreo = correo.Trim().ToLowerInvariant();
             return _context.Usuarios
                 .AsNoTracking()
                 .FirstOrDefault(usuario =>
-                    usuario.Correo == correo && !usuario.Eliminado);
+                    usuario.Correo.Trim().ToLower() == normalizedCorreo &&
+                    !usuario.Eliminado);
+        }
+
+        public bool IsCorreoInUse(string correo, int? exceptUserId = null)
+        {
+            var normalizedCorreo = correo.Trim().ToLowerInvariant();
+            return _context.Usuarios.Any(usuario =>
+                usuario.Correo.Trim().ToLower() == normalizedCorreo &&
+                (!exceptUserId.HasValue || usuario.Id != exceptUserId.Value));
         }
 
         public bool UpdateUsuario(int id, int userId, bool isAdmin, Usuario updatedUsuario)

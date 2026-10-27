@@ -29,6 +29,11 @@ namespace BusinessLogicLayer
             return _Store.GetUsuarioByCorreo(correo);
         }
 
+        bool IUsuarioManager.IsCorreoInUse(string correo, int? exceptUserId)
+        {
+            return _Store.IsCorreoInUse(correo, exceptUserId);
+        }
+
         string IUsuarioManager.CreateUsuario(Usuario usuario)
         {
             _Store.SaveUsuario(usuario);
