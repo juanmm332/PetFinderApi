@@ -36,6 +36,16 @@ namespace PresentationLayer
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
 
             services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Frontend", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             services.AddEndpointsApiExplorer();
             services.AddBusinessLogicLayerServices();
             services.AddDataAccessLayerServices(_configuration);
@@ -114,6 +124,7 @@ namespace PresentationLayer
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors("Frontend");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());

@@ -20,6 +20,9 @@ manualmente desde la raíz del repositorio:
 dotnet ef database update --project .\DataAccessLayer\DataAccessLayer.csproj --startup-project .\PresentationLayer\PresentationLayer.csproj
 ```
 
+La API permite solicitudes CORS desde `http://localhost:3000` y
+`https://localhost:3000` para el frontend local.
+
 Los animales requieren `Nombre`, `Foto` (URL o ruta), `IdUsuario` y aceptan un
 `Comentario` opcional. `Id` lo genera la base de datos; cada animal pertenece a
 un usuario y se elimina en cascada si se elimina ese usuario.
